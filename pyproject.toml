@@ -1,0 +1,91 @@
+[project]
+name = "my_project"
+version = "0.1.0"
+description = "Python bindings for my_project C++ library"
+readme = "README.md"
+authors = [{ name = "Your Name", email = "your.email@example.com" }]
+requires-python = ">=3.10"
+dependencies = []
+
+[build-system]
+requires = ["setuptools>=42", "wheel", "cmake>=3.10", "pybind11>=2.6.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["my_project"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[dependency-groups]
+build = ["cmake>=3.31.6", "setuptools>=75.8.2"]
+dev = [
+    "pre-commit>=4.1.0",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.0.0",
+    "pytest-xdist>=3.6.1",
+    "ruff>=0.9.10",
+]
+
+[tool.uv]
+default-groups = ["dev"]
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".git",
+    ".env",
+    ".venv",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+    "__pycache__",
+    "build",
+    "dist",
+    "3rdparty/*",
+]
+
+line-length = 119
+indent-width = 4
+target-version = "py310"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.ruff.lint]
+# Enable all rules that match Google Python Style Guide
+select = [
+    "E", # pycodestyle errors (PEP8)
+    "F", # pyflakes - Python syntax errors and undefined names
+    "W", # pycodestyle warnings
+    "I", # isort - import sorting
+    "N", # pep8-naming - Google Style Guide naming conventions
+    # "D",   # pydocstyle - Google Style docstring conventions
+    "B",   # flake8-bugbear - Additional bug detection
+    "C4",  # flake8-comprehensions - Better list/set/dict comprehensions
+    "DTZ", # flake8-datetimez - Modern datetime practices
+    "T20", # flake8-print - Discourage print statements
+    "RET", # flake8-return - Consistent return statements
+    "SIM", # flake8-simplify - Code simplification suggestions
+    "ERA", # eradicate - Remove commented-out code
+]
+
+ignore = [
+    "E501",   # line too long (we keep 119 as specified)
+    "D203",   # one-blank-line-before-class (conflicts with D211)
+    "D213",   # multi-line-summary-second-line (conflicts with D212)
+    "RET504", # return statement is redundant (not necessary)
+    "SIM108", # Use tenary operator instead of if-else block (if else block is more readable)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"] # Ignore unused imports in __init__ files
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"

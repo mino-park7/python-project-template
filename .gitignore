@@ -1,0 +1,25 @@
+# 빌드 디렉토리
+build/
+out/
+
+# IDE 설정 파일
+.vscode/
+.idea/
+
+# 컴파일된 파일들
+*.exe
+*.out
+*.app
+*.o
+*.obj
+
+# CMake 생성 파일들
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+*.egg-info
+dist/
+.DS_Store
+*.pyc
