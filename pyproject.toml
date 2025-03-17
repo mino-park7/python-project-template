@@ -1,6 +1,6 @@
 [project]
 name = "my_project"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Python bindings for my_project C++ library"
 readme = "README.md"
 authors = [{ name = "Your Name", email = "your.email@example.com" }]
@@ -8,19 +8,23 @@ requires-python = ">=3.10"
 dependencies = []
 
 [build-system]
-requires = ["setuptools>=42", "wheel", "cmake>=3.10", "pybind11>=2.6.0"]
+requires = [
+    "setuptools>=42",
+    "wheel",
+    "cmake>=3.10",
+    "pybind11>=2.6.0",
+    "packaging>=24.2",
+]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = ["my_project"]
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-
 [dependency-groups]
 build = ["cmake>=3.31.6", "setuptools>=75.8.2"]
 dev = [
+    "mypy>=1.15.0",
+    "packaging>=24.2",
     "pre-commit>=4.1.0",
     "pytest>=8.3.5",
     "pytest-cov>=6.0.0",
@@ -60,12 +64,12 @@ line-ending = "auto"
 [tool.ruff.lint]
 # Enable all rules that match Google Python Style Guide
 select = [
-    "E", # pycodestyle errors (PEP8)
-    "F", # pyflakes - Python syntax errors and undefined names
-    "W", # pycodestyle warnings
-    "I", # isort - import sorting
-    "N", # pep8-naming - Google Style Guide naming conventions
-    # "D",   # pydocstyle - Google Style docstring conventions
+    "E",   # pycodestyle errors (PEP8)
+    "F",   # pyflakes - Python syntax errors and undefined names
+    "W",   # pycodestyle warnings
+    "I",   # isort - import sorting
+    "N",   # pep8-naming - Google Style Guide naming conventions
+    "D",   # pydocstyle - Google Style docstring conventions
     "B",   # flake8-bugbear - Additional bug detection
     "C4",  # flake8-comprehensions - Better list/set/dict comprehensions
     "DTZ", # flake8-datetimez - Modern datetime practices
@@ -79,6 +83,7 @@ ignore = [
     "E501",   # line too long (we keep 119 as specified)
     "D203",   # one-blank-line-before-class (conflicts with D211)
     "D213",   # multi-line-summary-second-line (conflicts with D212)
+    "D104",   # undocumented-public-package
     "RET504", # return statement is redundant (not necessary)
     "SIM108", # Use tenary operator instead of if-else block (if else block is more readable)
 ]
@@ -91,3 +96,25 @@ convention = "google"
 
 [tool.ruff.lint.flake8-quotes]
 docstring-quotes = "double"
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+log_level = "INFO"
+addopts = [
+    "--durations=0",     # Show durations of each test
+    "--strict-markers",  # Warn if unregistered markers are used
+    "--tb=short",        # Short traceback format
+    "-ra",               # Show all test results summary (failures, skips, etc.)
+    "--showlocals",      # Show local variables on failure
+    "-vv",               # Show verbose output
+    "--color=yes",
+    "--cov-report=html",
+    "--cov=my_project",
+    "-n=4",
+]
+testpaths = ["tests"] # Directory containing test files
+python_files = ["test_*.py", "*_test.py"] # Test file patterns
+python_classes = ["Test*"]
+python_functions = ["test_*"]

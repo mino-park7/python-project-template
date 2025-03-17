@@ -1,0 +1,30 @@
+name: Prepare-Release
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-package:
+    runs-on: [ubuntu-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+      - name: Set up environment variables
+        run: |
+          # Remove 'v' prefix from the tag if it exists
+          echo "TAG=${GITHUB_HEAD_REF#release/v}" >> $GITHUB_ENV
+      - uses: astral-sh/setup-uv@v5
+      - name: Run unit test
+        run: uv run pytest
+      - name: build package
+        run: |
+          uv build --python 3.10
+          uv build --python 3.11
+          uv build --python 3.12
+      - name: Upload package to github artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: my_project-${{ env.TAG }}
+          path: dist/my_project-${{ env.TAG }}-*.whl

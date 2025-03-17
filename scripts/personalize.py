@@ -1,7 +1,7 @@
-"""
+"""Personalize the project for own project.
+
 Run this script once after first creating your project from this template repo to personalize
 it for own project.
-
 This script is interactive and will prompt you for various inputs.
 """
 
@@ -30,7 +30,7 @@ PATHS_TO_IGNORE = {
     REPO_BASE / ".git",
     REPO_BASE / "docs" / "source" / "_static" / "favicon.ico",
     REPO_BASE / ".venv",
-    REPO_BASE / "uv.lock",
+    REPO_BASE / ".ruff_cache",
 }
 
 GITIGNORE_LIST = [
@@ -78,6 +78,15 @@ BASE_URL_TO_REPLACE = "https://github.com/allenai/python-package-template"
     default=False,
 )
 def main(github_org: str, github_repo: str, package_name: str, yes: bool = False, dry_run: bool = False):
+    """Personalize the project for own project.
+
+    Args:
+        github_org (str): The name of your GitHub organization or user.
+        github_repo (str): The name of your GitHub repository.
+        package_name (str): The name of your Python package.
+        yes (bool): Run the script without prompting for a confirmation.
+        dry_run (bool): Run the script without making any changes.
+    """
     repo_url = f"https://github.com/{github_org}/{github_repo}"
     package_actual_name = package_name.replace("_", "-")
     package_dir_name = package_name.replace("-", "_")
@@ -136,6 +145,14 @@ def main(github_org: str, github_repo: str, package_name: str, yes: bool = False
 
 
 def iterfiles(dir: Path) -> Generator[Path, None, None]:
+    """Iterate over all files in the given directory.
+
+    Args:
+        dir (Path): The directory to iterate over.
+
+    Returns:
+        Generator[Path, None, None]: A generator of all files in the given directory.
+    """
     assert dir.is_dir()
     for path in dir.iterdir():
         if path in PATHS_TO_IGNORE:
@@ -156,6 +173,13 @@ def iterfiles(dir: Path) -> Generator[Path, None, None]:
 
 
 def personalize_file(path: Path, dry_run: bool, replacements: List[Tuple[str, str]]):
+    """Personalize a file.
+
+    Args:
+        path (Path): The path to the file to personalize.
+        dry_run (bool): Run the script without making any changes.
+        replacements (List[Tuple[str, str]]): The replacements to make in the file.
+    """
     try:
         with path.open(mode="r+t", encoding="utf-8") as file:
             filedata = file.read()

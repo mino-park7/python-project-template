@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  release:
+    runs-on: [ubuntu-latest]
+    permissions:
+      contents: write
+      discussions: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up environment variables
+        run: |
+          echo "TAG=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: my_project-${{ env.TAG }}
+          path: dist/
+
+      - name: Generate release notes
+        env:
+          TAG: v${{ env.TAG }}
+        run: |
+          pip install packaging
+          git config --global --add safe.directory ./
+          python scripts/release_notes.py > ./release_notes.md
+
+      - name: Upload to PyPI
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          pip install twine
+          twine upload dist/*
+
+      - name: Publish Github release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          body_path: ./release_notes.md
+          prerelease: ${{ contains(env.TAG, 'rc') }}
+          files: |
+            dist/*
